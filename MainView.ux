@@ -1,0 +1,64 @@
+<App Background="#eee">
+	
+<JavaScript>
+	var Observable = require("FuseJS/Observable");
+
+	var data = Observable();
+	var base_url = "http://ratemenow.o-leafs.com";
+	var fetch_url = base_url + '/api/place/'
+
+	fetch(fetch_url , {
+		    method: "GET",
+			headers: { "Authorization": "Token 0af759f45034dd24d3e0409dd289f0a323299688"}
+		})
+		.then(function(response) {
+			return response.json();
+		})
+		.then(function(responseObject) {
+			var items = [];
+			for (i in responseObject ){
+				items.push(responseObject[i]);
+			}
+			data.replaceAll(items); 
+	    });
+
+
+	module.exports = {
+		data: data,
+		base_url: base_url
+	};
+</JavaScript>
+
+<Panel ux:Class="NewsItem">
+		<StackPanel ItemSpacing="10" Margin="15">
+			<Text Value="{name}" TextWrapping="Wrap" FontSize="20" />
+			<DockPanel>
+				<Text Value="{description}" TextWrapping="Wrap" FontSize="13" />
+				
+				<Panel Dock="Left">
+					<Image Url="{base_url}/{picture}" Width="80" Margin="0,0,10,0" Alignment="TopLeft" />
+				</Panel>
+			</DockPanel>
+			<DockPanel>
+			 	<Text Value="by {owner}" FontSize="10" Color="#999" Dock="Right" />
+			</DockPanel>
+		</StackPanel>
+		<Rectangle Color="#FFF" />
+	</Panel>
+
+	<ClientPanel>
+		<Panel Dock="Top" Height="46">
+			<Text Value="Rate Me Now" Color="#ECEFF1" FontSize="20" Alignment="Center" />
+			<Rectangle Color="#37474F" />
+			<Shadow />
+		</Panel>
+		<ScrollView>
+			<StackPanel ItemSpacing="1">
+				<Each Items="{data}">
+					<NewsItem />
+				</Each>
+			</StackPanel>
+		</ScrollView>
+	</ClientPanel>
+				
+</App>
